@@ -29,7 +29,7 @@ A simple backend system to track student meal attendance (breakfast, lunch, dinn
 ```
 /cmd
 /config
-/controllers
+/handlers
 /models
 /repositories
 /services
