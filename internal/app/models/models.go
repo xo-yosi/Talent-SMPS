@@ -19,6 +19,13 @@ type Student struct {
 	Dinner      bool      `json:"dinner" gorm:"not null"`
 }
 
+type Users struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	Username  string    `json:"username" gorm:"uniqueIndex;not null"`
+	Password  string    `json:"password" gorm:"not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"not null"`
+}
+
 // type MealLog struct {
 // 	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 // 	StudentID uuid.UUID `json:"student_id" gorm:"not null"`
