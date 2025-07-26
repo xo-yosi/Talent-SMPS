@@ -1,0 +1,18 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: smps-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: smps
+      POSTGRES_PASSWORD: smps_password
+      POSTGRES_DB: smps
+    ports:
+      - "5432:5432" 
+    volumes:
+      - smps_pgdata:/var/lib/postgresql/data
+
+volumes:
+  smps_pgdata:
+    name: smps_pgdata
