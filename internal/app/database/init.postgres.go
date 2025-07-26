@@ -1,6 +1,7 @@
 package database
 
 import (
+	"github.com/xo-yosi/Talent-SMPS/internal/app/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -14,7 +15,10 @@ func Connect(databaseURL string) (*gorm.DB, error) {
 }
 
 func Migrate(db *gorm.DB) error {
-	err := db.AutoMigrate()
+	err := db.AutoMigrate(
+		&models.Student{}, 
+		// &models.MealLog{},
+	)
 	if err != nil {
 		return err
 	}
