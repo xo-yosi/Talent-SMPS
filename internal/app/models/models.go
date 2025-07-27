@@ -14,9 +14,9 @@ type Student struct {
 	PhoneNumber string    `json:"phone_number" gorm:"not null"`
 	Gender      string    `json:"gender" gorm:"not null"`
 	CreatedAt   time.Time `json:"created_at" gorm:"not null"`
-	Breakfast   bool      `json:"breakfast" gorm:"not null"`
-	Lunch       bool      `json:"lunch" gorm:"not null"`
-	Dinner      bool      `json:"dinner" gorm:"not null"`
+	Breakfast   bool      `json:"breakfast" gorm:"not null" default:"false"`
+	Lunch       bool      `json:"lunch" gorm:"not null" default:"false"`
+	Dinner      bool      `json:"dinner" gorm:"not null" default:"false"`
 }
 
 type Users struct {
@@ -24,6 +24,13 @@ type Users struct {
 	Username  string    `json:"username" gorm:"uniqueIndex;not null"`
 	Password  string    `json:"password" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"not null"`
+}
+
+type StudentRegisterRequest struct {
+	Name 	  string `json:"name" binding:"required"`
+	Age        int    `json:"age" binding:"required"`
+	PhoneNumber string `json:"phone_number" binding:"required"`
+	Gender     string `json:"gender" binding:"required"`
 }
 
 type UserLoginRequest struct {

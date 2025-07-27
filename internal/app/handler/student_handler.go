@@ -1,1 +1,36 @@
 package handler
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/repository"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/services"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/models"
+)
+
+type StudentHandler struct {
+	service *services.StudentService
+	srepo   repository.StudentRepository
+}
+
+func NewStudentHandler(s *services.StudentService, r repository.StudentRepository) *StudentHandler {
+	return &StudentHandler{service: s, srepo: r}
+}
+
+func (h *StudentHandler) HandlerStudentRegister(c *gin.Context) {
+	var studentRegister models.StudentRegisterRequest
+
+	if err := c.ShouldBindJSON(&studentRegister); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := h.service.RegisterStudent(studentRegister)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Student registered successfully"})
+}
