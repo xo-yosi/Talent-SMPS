@@ -1,10 +1,9 @@
 package utils
 
 func GenerateNextCoordinatorID(lastID int) int {
-	var num int
-	if lastID == 0{
-		return 0000
+	if lastID == 0 {
+		return 100
 	}
-	num++
-	return num
+	lastID++
+	return lastID
 }

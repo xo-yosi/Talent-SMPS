@@ -34,3 +34,15 @@ func (s *StudentPostgres) GetLastCoordinatorID() (int, error) {
 	}
 	return student.StudentID, nil
 }
+
+func (s *StudentPostgres) GetStudentWithPhoneNumber(phoneNumber string) *models.Student {
+	var student models.Student
+	err := s.db.Where("phone_number = ?", phoneNumber).First(&student).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
+	}
+	if err != nil {
+		return nil
+	}
+	return &student
+}

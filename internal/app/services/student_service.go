@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/xo-yosi/Talent-SMPS/internal/app/models"
@@ -23,6 +24,8 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 		return errors.New("failed to get last Student ID")
 	}
 
+	fmt.Println("Last Student ID:", lastID)
+
 	newID := utils.GenerateNextCoordinatorID(lastID)
 
 	student := models.Student{
@@ -33,7 +36,6 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 		Gender:      studentData.Gender,
 		CreatedAt:   time.Now(),
 	}
-
 
 	err = s.srepo.CreateStudent(&student)
 	if err != nil {

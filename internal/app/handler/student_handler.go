@@ -22,7 +22,13 @@ func (h *StudentHandler) HandlerStudentRegister(c *gin.Context) {
 	var studentRegister models.StudentRegisterRequest
 
 	if err := c.ShouldBindJSON(&studentRegister); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	student := h.srepo.GetStudentWithPhoneNumber(studentRegister.PhoneNumber)
+	if student != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "Student with this phone number already exists"})
 		return
 	}
 

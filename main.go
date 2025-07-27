@@ -54,10 +54,19 @@ func main() {
 	UserHandler := handler.NewUserHandler(UserService, UserRepo)
 	fmt.Println("User handler initialized successfully!")
 
+	StudentRepo := postgres.NewStudentPostgres(db)
+	fmt.Println("Student repository initialized successfully!")
+	StudentService := services.NewStudentService(StudentRepo)
+	fmt.Println("Student service initialized successfully!")
+	StudentHandler := handler.NewStudentHandler(StudentService, StudentRepo)
+	fmt.Println("Student handler initialized successfully!")
+
 	r := gin.Default()
 
 	routes.SetupUserRoutes(r, UserHandler)
 	fmt.Println("User routes set up successfully!")
+	routes.SetupStudentRoutes(r, StudentHandler)
+	fmt.Println("Student routes set up successfully!")
 
 	if err := r.Run(":" + cfg.AppPort); err != nil {
 		fmt.Println("Error starting the server:", err)
