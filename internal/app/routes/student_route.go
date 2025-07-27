@@ -12,5 +12,6 @@ func SetupStudentRoutes(r *gin.Engine, h *handler.StudentHandler) {
 		protected.Use(middleware.Auth)
 		protected.POST("/student-register", h.HandlerStudentRegister)
 		protected.GET("/student/:studentID", h.HandlerGetStudentByID)
+		protected.POST("/student/update-meal", h.HandlerStudentMeal)
 	}
 }

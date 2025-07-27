@@ -47,7 +47,7 @@ func (s *StudentPostgres) GetStudentWithPhoneNumber(phoneNumber string) *models.
 	return &student
 }
 
-func (s *StudentPostgres) GetStudentWithStudentID(studentID string) (*models.Student, error) {
+func (s *StudentPostgres) GetStudentWithStudentID(studentID int) (*models.Student, error) {
 	var student models.Student
 	err := s.db.Where("student_id = ?", studentID).First(&student).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -57,4 +57,23 @@ func (s *StudentPostgres) GetStudentWithStudentID(studentID string) (*models.Stu
 		return nil, err
 	}
 	return &student, nil
+}
+
+func (r *StudentPostgres) ResetDailyMeals(studentID int) error {
+	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).
+		Updates(map[string]interface{}{
+			"breakfast": false,
+			"lunch":     false,
+			"dinner":    false,
+		}).Error
+}
+
+
+func (r *StudentPostgres) MarkMeal(studentID int, meal string) error {
+	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).Update(meal, true).Error
+}
+
+func (r *StudentPostgres) UpdateSingleMeal(studentID int, meal string) error {
+	updates := map[string]interface{}{meal: true}
+	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).Updates(updates).Error
 }

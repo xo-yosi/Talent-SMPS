@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/models"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/repository"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/services"
-	"github.com/xo-yosi/Talent-SMPS/internal/app/models"
 )
 
 type StudentHandler struct {
@@ -48,7 +50,14 @@ func (h *StudentHandler) HandlerGetStudentByID(c *gin.Context) {
 		return
 	}
 
-	student, err := h.srepo.GetStudentWithStudentID(studentID)
+	// Convert studentID to int
+	var id int
+	if _, err := fmt.Sscanf(studentID, "%d", &id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Student ID format"})
+		return
+	}
+
+	student, err := h.srepo.GetStudentWithStudentID(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve student"})
 		return
@@ -60,4 +69,73 @@ func (h *StudentHandler) HandlerGetStudentByID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, student)
+}
+
+func (h *StudentHandler) HandlerStudentMeal(c *gin.Context) {
+	var mealUpdate models.MealUpdateRequest
+	if err := c.ShouldBindJSON(&mealUpdate); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	student, err := h.srepo.GetStudentWithStudentID(mealUpdate.StudentID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve student"})
+		return
+	}
+	if student == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Student not found"})
+		return
+	}
+
+	if student.Breakfast && student.Lunch && student.Dinner {
+		if err := h.srepo.ResetDailyMeals(student.StudentID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset meals"})
+			return
+		}
+		student, _ = h.srepo.GetStudentWithStudentID(mealUpdate.StudentID)
+	}
+
+
+	trueCount := 0
+	var mealToUpdate string
+	var alreadyMarked bool
+
+	if mealUpdate.Breakfast {
+		trueCount++
+		mealToUpdate = "breakfast"
+		alreadyMarked = student.Breakfast
+	}
+	if mealUpdate.Lunch {
+		trueCount++
+		mealToUpdate = "lunch"
+		alreadyMarked = student.Lunch
+	}
+	if mealUpdate.Dinner {
+		trueCount++
+		mealToUpdate = "dinner"
+		alreadyMarked = student.Dinner
+	}
+
+	if trueCount != 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Only one meal can be marked at a time"})
+		return
+	}
+
+	if alreadyMarked {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("You have already eaten %s", mealToUpdate)})
+		return
+	}
+
+	if err := h.srepo.UpdateSingleMeal(student.StudentID, mealToUpdate); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update meal status"})
+		return
+	}
+
+	if err := h.srepo.MarkMeal(student.StudentID, mealToUpdate); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to log meal"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("%s marked successfully", strings.Title(mealToUpdate))})
 }

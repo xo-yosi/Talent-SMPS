@@ -27,15 +27,22 @@ type Users struct {
 }
 
 type StudentRegisterRequest struct {
-	Name 	  string `json:"name" binding:"required"`
-	Age        int    `json:"age" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	Age         int    `json:"age" binding:"required"`
 	PhoneNumber string `json:"phone_number" binding:"required"`
-	Gender     string `json:"gender" binding:"required"`
+	Gender      string `json:"gender" binding:"required"`
 }
 
 type UserLoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type MealUpdateRequest struct {
+	StudentID int  `json:"student_id" binding:"required"`
+	Breakfast bool `json:"breakfast"`
+	Lunch     bool `json:"lunch"`
+	Dinner    bool `json:"dinner"`
 }
 
 // type MealLog struct {
