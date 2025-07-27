@@ -18,11 +18,11 @@ func LoadConfig() (Config, error) {
 		fmt.Println("Warning: .env file not found, using environment variables.")
 	}
 
-	dbHost := os.Getenv("POSTGRES_HOST")
-	dbPort := os.Getenv("POSTGRES_PORT")
-	dbUser := os.Getenv("POSTGRES_USER")
-	dbPassword := os.Getenv("POSTGRES_PASSWORD")
-	dbName := os.Getenv("POSTGRES_DB")
+	dbHost := os.Getenv("RENDER_HOST")
+	dbPort := os.Getenv("RENDER_PORT")
+	dbUser := os.Getenv("RENDER_USER")
+	dbPassword := os.Getenv("RENDER_PASSWORD")
+	dbName := os.Getenv("RENDER_DB")
 	appPort := os.Getenv("APP_PORT")
 
 	if dbUser == "" || dbPassword == "" || dbName == "" || dbHost == "" {
