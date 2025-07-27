@@ -5,6 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/database"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/handler"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/postgres"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/services"
+
+	"github.com/xo-yosi/Talent-SMPS/internal/app/routes"
 	"github.com/xo-yosi/Talent-SMPS/internal/config"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -40,7 +45,19 @@ func main() {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
 	fmt.Printf("Hashed Password: %s\n", hashedPassword)
 
+	UserRepo := postgres.NewUserPostgres(db)
+	fmt.Println("User repository initialized successfully!")
+
+	UserService := services.NewUserService(UserRepo)
+	fmt.Println("User service initialized successfully!")
+
+	UserHandler := handler.NewUserHandler(UserService, UserRepo)
+	fmt.Println("User handler initialized successfully!")
+
 	r := gin.Default()
+
+	routes.SetupUserRoutes(r, UserHandler)
+	fmt.Println("User routes set up successfully!")
 
 	if err := r.Run(":" + cfg.AppPort); err != nil {
 		fmt.Println("Error starting the server:", err)
