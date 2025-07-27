@@ -40,3 +40,24 @@ func (h *StudentHandler) HandlerStudentRegister(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Student registered successfully"})
 }
+
+func (h *StudentHandler) HandlerGetStudentByID(c *gin.Context) {
+	studentID := c.Param("studentID")
+	if studentID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Student ID is required"})
+		return
+	}
+
+	student, err := h.srepo.GetStudentWithStudentID(studentID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve student"})
+		return
+	}
+
+	if student == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Student not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, student)
+}

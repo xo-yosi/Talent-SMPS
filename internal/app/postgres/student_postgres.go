@@ -46,3 +46,15 @@ func (s *StudentPostgres) GetStudentWithPhoneNumber(phoneNumber string) *models.
 	}
 	return &student
 }
+
+func (s *StudentPostgres) GetStudentWithStudentID(studentID string) (*models.Student, error) {
+	var student models.Student
+	err := s.db.Where("student_id = ?", studentID).First(&student).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &student, nil
+}
