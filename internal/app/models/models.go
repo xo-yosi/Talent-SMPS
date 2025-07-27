@@ -26,6 +26,11 @@ type Users struct {
 	CreatedAt time.Time `json:"created_at" gorm:"not null"`
 }
 
+type UserLoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // type MealLog struct {
 // 	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 // 	StudentID uuid.UUID `json:"student_id" gorm:"not null"`
