@@ -9,7 +9,6 @@ type StudentRepository interface {
 	GetLastCoordinatorID() (int, error)
 	GetStudentWithPhoneNumber(phoneNumber string) *models.Student
 	GetStudentWithStudentID(studentID int) (*models.Student, error)
-	MarkMeal(studentID int, meal string) error
 	UpdateSingleMeal(studentID int, meal string) error
-	ResetDailyMeals(studentID int) error
+	UpdateMealPreferences(studentID int, breakfast, lunch, dinner bool) error
 }

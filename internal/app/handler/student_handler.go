@@ -42,7 +42,6 @@ func (h *StudentHandler) HandlerStudentRegister(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Student registered successfully"})
 }
-
 func (h *StudentHandler) HandlerGetStudentByID(c *gin.Context) {
 	studentID := c.Param("studentID")
 	if studentID == "" {
@@ -68,6 +67,17 @@ func (h *StudentHandler) HandlerGetStudentByID(c *gin.Context) {
 		return
 	}
 
+	if student.Breakfast && student.Lunch && student.Dinner {
+		err := h.srepo.UpdateMealPreferences(student.StudentID, false, false, false)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset meal preferences"})
+			return
+		}
+		student.Breakfast = false
+		student.Lunch = false
+		student.Dinner = false
+	}
+
 	c.JSON(http.StatusOK, student)
 }
 
@@ -87,15 +97,6 @@ func (h *StudentHandler) HandlerStudentMeal(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Student not found"})
 		return
 	}
-
-	if student.Breakfast && student.Lunch && student.Dinner {
-		if err := h.srepo.ResetDailyMeals(student.StudentID); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset meals"})
-			return
-		}
-		student, _ = h.srepo.GetStudentWithStudentID(mealUpdate.StudentID)
-	}
-
 
 	trueCount := 0
 	var mealToUpdate string
@@ -129,11 +130,6 @@ func (h *StudentHandler) HandlerStudentMeal(c *gin.Context) {
 
 	if err := h.srepo.UpdateSingleMeal(student.StudentID, mealToUpdate); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update meal status"})
-		return
-	}
-
-	if err := h.srepo.MarkMeal(student.StudentID, mealToUpdate); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to log meal"})
 		return
 	}
 
