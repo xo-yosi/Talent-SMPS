@@ -9,6 +9,7 @@ import (
 type Student struct {
 	ID          uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	StudentID   int       `json:"student_id" gorm:"uniqueIndex;not null"`
+	ProfilePic  string    `json:"profile_pic" gorm:"not null"`
 	Name        string    `json:"name" gorm:"not null"`
 	Age         int       `json:"age" gorm:"not null"`
 	PhoneNumber string    `json:"phone_number" gorm:"not null"`

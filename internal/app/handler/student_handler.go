@@ -34,11 +34,16 @@ func (h *StudentHandler) HandlerStudentRegister(c *gin.Context) {
 		return
 	}
 
-	err := h.service.RegisterStudent(studentRegister)
+	file, err := c.FormFile("profile")
+	if err != nil {
+		file = nil
+	}
+	err = h.service.RegisterStudent(studentRegister, file)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	
 
 	c.JSON(http.StatusOK, gin.H{"message": "Student registered successfully"})
 }
@@ -95,7 +100,6 @@ func (h *StudentHandler) HandlerStudentMeal(c *gin.Context) {
 		}
 		student, _ = h.srepo.GetStudentWithStudentID(mealUpdate.StudentID)
 	}
-
 
 	trueCount := 0
 	var mealToUpdate string
