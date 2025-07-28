@@ -34,13 +34,13 @@ func (h *StudentHandler) HandlerStudentRegister(c *gin.Context) {
 		return
 	}
 
-	err := h.service.RegisterStudent(studentRegister)
+	StudentID, err := h.service.RegisterStudent(studentRegister)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Student registered successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Student registered successfully", "student_id": StudentID})
 }
 func (h *StudentHandler) HandlerGetStudentByID(c *gin.Context) {
 	studentID := c.Param("studentID")
