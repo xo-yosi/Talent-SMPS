@@ -12,7 +12,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/models"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/repository"
-	"github.com/xo-yosi/Talent-SMPS/internal/config"
 	"github.com/xo-yosi/Talent-SMPS/internal/utils"
 )
 
@@ -32,7 +31,7 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 	}
 
 	newID := utils.GenerateNextCoordinatorID(lastID)
-	var profilePicURL string
+	// var profilePicURL string
 	bucket := "talent-smps-images"
 	if file != nil {
 		src, err := file.Open()
@@ -53,7 +52,7 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 			return 0, fmt.Errorf("failed to upload profile picture: %w", err)
 		}
 
-		profilePicURL = fmt.Sprintf("%s/%s/%s", config.AppConfig.S3Endpoint, bucket, key)
+		// profilePicURL = fmt.Sprintf("%s/%s/%s", config.AppConfig.S3Endpoint, bucket, key)
 	}
 
 	student := models.Student{
@@ -62,7 +61,7 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 		Age:         studentData.Age,
 		PhoneNumber: studentData.PhoneNumber,
 		Gender:      studentData.Gender,
-		ProfilePic:  profilePicURL,
+		// ProfilePic:  profilePicURL,
 		CreatedAt:   time.Now(),
 	}
 
