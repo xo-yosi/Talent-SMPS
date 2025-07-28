@@ -25,10 +25,10 @@ func NewStudentService(srepo repository.StudentRepository, s3Client *s3.Client) 
 	return &StudentService{srepo: srepo, S3Client: s3Client}
 }
 
-func (s *StudentService) RegisterStudent(studentData models.StudentRegisterRequest, file *multipart.FileHeader) error {
+func (s *StudentService) RegisterStudent(studentData models.StudentRegisterRequest, file *multipart.FileHeader) (int, error) {
 	lastID, err := s.srepo.GetLastCoordinatorID()
 	if err != nil {
-		return errors.New("failed to get last Student ID")
+		return 0, errors.New("failed to get last Student ID")
 	}
 
 	newID := utils.GenerateNextCoordinatorID(lastID)
@@ -37,7 +37,7 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 	if file != nil {
 		src, err := file.Open()
 		if err != nil {
-			return fmt.Errorf("failed to open profile picture: %w", err)
+			return 0, fmt.Errorf("failed to open profile picture: %w", err)
 		}
 		defer src.Close()
 
@@ -50,7 +50,7 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 			ACL:    "public-read",
 		})
 		if err != nil {
-			return fmt.Errorf("failed to upload profile picture: %w", err)
+			return 0, fmt.Errorf("failed to upload profile picture: %w", err)
 		}
 
 		profilePicURL = fmt.Sprintf("%s/%s/%s", config.AppConfig.S3Endpoint, bucket, key)
@@ -67,8 +67,8 @@ func (s *StudentService) RegisterStudent(studentData models.StudentRegisterReque
 	}
 
 	if err := s.srepo.CreateStudent(&student); err != nil {
-		return errors.New("failed to create student")
+		return 0, errors.New("failed to create student")
 	}
 
-	return nil
+	return newID, nil
 }

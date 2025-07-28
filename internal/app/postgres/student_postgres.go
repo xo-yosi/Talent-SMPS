@@ -59,21 +59,16 @@ func (s *StudentPostgres) GetStudentWithStudentID(studentID int) (*models.Studen
 	return &student, nil
 }
 
-func (r *StudentPostgres) ResetDailyMeals(studentID int) error {
-	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).
-		Updates(map[string]interface{}{
-			"breakfast": false,
-			"lunch":     false,
-			"dinner":    false,
-		}).Error
-}
-
-
-func (r *StudentPostgres) MarkMeal(studentID int, meal string) error {
-	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).Update(meal, true).Error
-}
-
 func (r *StudentPostgres) UpdateSingleMeal(studentID int, meal string) error {
 	updates := map[string]interface{}{meal: true}
 	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).Updates(updates).Error
+}
+
+func (r *StudentPostgres) UpdateMealPreferences(studentID int, breakfast, lunch, dinner bool) error {
+	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).
+		Updates(map[string]interface{}{
+			"breakfast": breakfast,
+			"lunch":     lunch,
+			"dinner":    dinner,
+		}).Error
 }
