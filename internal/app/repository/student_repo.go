@@ -11,4 +11,5 @@ type StudentRepository interface {
 	GetStudentWithStudentID(studentID int) (*models.Student, error)
 	UpdateSingleMeal(studentID int, meal string) error
 	UpdateMealPreferences(studentID int, breakfast, lunch, dinner bool) error
+	LogMealStatus(studentID int, meal string) error
 }

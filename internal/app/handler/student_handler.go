@@ -34,7 +34,11 @@ func (h *StudentHandler) HandlerStudentRegister(c *gin.Context) {
 		return
 	}
 
-	StudentID, err := h.service.RegisterStudent(studentRegister)
+	file, err := c.FormFile("profile")
+	if err != nil {
+		file = nil
+	}
+	StudentID, err := h.service.RegisterStudent(studentRegister, file)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -130,6 +134,10 @@ func (h *StudentHandler) HandlerStudentMeal(c *gin.Context) {
 
 	if err := h.srepo.UpdateSingleMeal(student.StudentID, mealToUpdate); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update meal status"})
+		return
+	}
+	if err := h.srepo.LogMealStatus(student.StudentID, mealToUpdate); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to log meal status"})
 		return
 	}
 

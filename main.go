@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/database"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/handler"
+	"github.com/xo-yosi/Talent-SMPS/internal/app/infra"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/postgres"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/services"
 
@@ -21,7 +22,7 @@ func main() {
 		return
 	}
 	fmt.Println("Configuration loaded successfully!")
-
+	s3Client := infra.NewClient()
 	db, err := database.Connect(cfg.DatabaseURL)
 	if err != nil {
 		fmt.Println("Error connecting to the database:", err)
@@ -56,7 +57,7 @@ func main() {
 
 	StudentRepo := postgres.NewStudentPostgres(db)
 	fmt.Println("Student repository initialized successfully!")
-	StudentService := services.NewStudentService(StudentRepo)
+	StudentService := services.NewStudentService(StudentRepo, s3Client)
 	fmt.Println("Student service initialized successfully!")
 	StudentHandler := handler.NewStudentHandler(StudentService, StudentRepo)
 	fmt.Println("Student handler initialized successfully!")
