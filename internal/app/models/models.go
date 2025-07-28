@@ -46,10 +46,9 @@ type MealUpdateRequest struct {
 	Dinner    bool `json:"dinner"`
 }
 
-// type MealLog struct {
-// 	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
-// 	StudentID uuid.UUID `json:"student_id" gorm:"not null"`
-// 	MealType  string    `json:"meal_type" gorm:"not null"`
-// 	CreatedAt time.Time `json:"created_at" gorm:"not null"`
-// 	Student   Student   `gorm:"foreignKey:StudentID;references:ID"`
-// }
+type MealLog struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	StudentID int       `json:"student_id" gorm:"not null;index foreignKey:StudentID;references:StudentID"`
+	MealType  string    `json:"meal_type" gorm:"not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"not null"`
+}

@@ -136,6 +136,10 @@ func (h *StudentHandler) HandlerStudentMeal(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update meal status"})
 		return
 	}
+	if err := h.srepo.LogMealStatus(student.StudentID, mealToUpdate); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to log meal status"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("%s marked successfully", strings.Title(mealToUpdate))})
 }

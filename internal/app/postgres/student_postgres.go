@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"errors"
+	"time"
 
 	"github.com/xo-yosi/Talent-SMPS/internal/app/models"
 	"gorm.io/gorm"
@@ -71,4 +72,13 @@ func (r *StudentPostgres) UpdateMealPreferences(studentID int, breakfast, lunch,
 			"lunch":     lunch,
 			"dinner":    dinner,
 		}).Error
+}
+
+func (r *StudentPostgres) LogMealStatus(studentID int, meal string) error {
+	meallog := models.MealLog{
+		StudentID: studentID,
+		MealType:  meal,
+		CreatedAt: time.Now(),
+	}
+	return r.db.Create(&meallog).Error
 }
