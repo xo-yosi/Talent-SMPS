@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/robfig/cron/v3"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/database"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/handler"
 	"github.com/xo-yosi/Talent-SMPS/internal/app/infra"
@@ -61,6 +63,23 @@ func main() {
 	fmt.Println("Student service initialized successfully!")
 	StudentHandler := handler.NewStudentHandler(StudentService, StudentRepo)
 	fmt.Println("Student handler initialized successfully!")
+
+	c := cron.New()
+
+	_, err = c.AddFunc("0 0 * * *", func() {
+		log.Println("⏰ Resetting all student meal flags...")
+		if err := StudentRepo.ResetAllMeals(); err != nil {
+			log.Println("❌ Failed to reset meals:", err)
+		} else {
+			log.Println("✅ All student meals reset to false")
+		}
+	})
+	if err != nil {
+		log.Fatalf("❌ Failed to schedule meal reset: %v", err)
+	}
+	c.Start()
+
+	fmt.Println("✅ Meal reset scheduler started. Running...")
 
 	r := gin.Default()
 

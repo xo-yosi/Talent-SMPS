@@ -60,6 +60,17 @@ func (s *StudentPostgres) GetStudentWithStudentID(studentID int) (*models.Studen
 	return &student, nil
 }
 
+
+func (r *StudentPostgres) ResetAllMeals() error {
+	result := r.db.Model(&models.Student{}).Updates(map[string]interface{}{
+		"breakfast": false,
+		"lunch":     false,
+		"dinner":    false,
+	})
+	return result.Error
+}
+
+
 func (r *StudentPostgres) UpdateSingleMeal(studentID int, meal string) error {
 	updates := map[string]interface{}{meal: true}
 	return r.db.Model(&models.Student{}).Where("student_id = ?", studentID).Updates(updates).Error
