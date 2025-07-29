@@ -64,6 +64,12 @@ func main() {
 	StudentHandler := handler.NewStudentHandler(StudentService, StudentRepo)
 	fmt.Println("Student handler initialized successfully!")
 
+
+	MealRepo := postgres.NewMealPostgres(db)
+	fmt.Println("Meal repository initialized successfully!")
+	MealHandler := handler.NewMealHandler(MealRepo)
+	fmt.Println("Meal handler initialized successfully!")
+
 	c := cron.New()
 
 	_, err = c.AddFunc("0 0 * * *", func() {
@@ -87,6 +93,8 @@ func main() {
 	fmt.Println("User routes set up successfully!")
 	routes.SetupStudentRoutes(r, StudentHandler)
 	fmt.Println("Student routes set up successfully!")
+	routes.SetupMealRoutes(r, MealHandler)
+	fmt.Println("Meal routes set up successfully!")
 
 	if err := r.Run(":" + cfg.AppPort); err != nil {
 		fmt.Println("Error starting the server:", err)
