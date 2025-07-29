@@ -67,7 +67,7 @@ func main() {
 
 	MealRepo := postgres.NewMealPostgres(db)
 	fmt.Println("Meal repository initialized successfully!")
-	MealHandler := handler.NewMealHandler(MealRepo)
+	MealHandler := handler.NewMealHandler(MealRepo, StudentRepo)
 	fmt.Println("Meal handler initialized successfully!")
 
 	c := cron.New()
