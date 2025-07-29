@@ -20,6 +20,11 @@ type Student struct {
 	Dinner      bool      `json:"dinner" gorm:"not null" default:"false"`
 }
 
+type MealSummary struct {
+	MealType string `json:"meal_type"`
+	Total    int    `json:"total"`
+}
+
 type Users struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Username  string    `json:"username" gorm:"uniqueIndex;not null"`
