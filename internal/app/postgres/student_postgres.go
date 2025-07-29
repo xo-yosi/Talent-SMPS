@@ -23,6 +23,15 @@ func (s *StudentPostgres) CreateStudent(student *models.Student) error {
 	return nil
 }
 
+func (s *StudentPostgres) GetTotalStudents() (int, error) {
+	var count int64
+	err := s.db.Model(&models.Student{}).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
+}
+
 func (s *StudentPostgres) GetLastCoordinatorID() (int, error) {
 	var student models.Student
 

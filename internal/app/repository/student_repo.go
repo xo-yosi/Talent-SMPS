@@ -13,4 +13,5 @@ type StudentRepository interface {
 	UpdateMealPreferences(studentID int, breakfast, lunch, dinner bool) error
 	LogMealStatus(studentID int, meal string) error
 	ResetAllMeals() error
+	GetTotalStudents() (int, error)
 }

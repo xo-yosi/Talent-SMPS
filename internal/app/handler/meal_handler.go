@@ -10,10 +10,11 @@ import (
 
 type MealHandler struct {
 	mrepo repository.MealRepository
+	srepo repository.StudentRepository
 }
 
-func NewMealHandler(m repository.MealRepository) *MealHandler {
-	return &MealHandler{mrepo: m}
+func NewMealHandler(m repository.MealRepository, s repository.StudentRepository) *MealHandler {
+	return &MealHandler{mrepo: m, srepo: s}
 }
 
 func (h *MealHandler) GetMealAnalytics(c *gin.Context) {
@@ -42,5 +43,14 @@ func (h *MealHandler) GetMealAnalytics(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	totalStudents, err := h.srepo.GetTotalStudents()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch total students"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"total_students": totalStudents,
+		"result":          result,
+	})
 }
