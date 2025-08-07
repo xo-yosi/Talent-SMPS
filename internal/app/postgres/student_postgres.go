@@ -98,7 +98,7 @@ func (r *StudentPostgres) LogMealStatus(studentID int, meal string) error {
 	meallog := models.MealLog{
 		StudentID: studentID,
 		MealType:  meal,
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
 	}
 	return r.db.Create(&meallog).Error
 }

@@ -21,11 +21,11 @@ func (h *MealHandler) GetMealAnalytics(c *gin.Context) {
 	rangeParam := c.DefaultQuery("range", "today")
 	var fromDate time.Time
 
-	now := time.Now()
+	now := time.Now().UTC()
 
 	switch rangeParam {
 	case "today":
-		fromDate = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+		fromDate = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
 	case "7d":
 		fromDate = now.AddDate(0, 0, -7)
 	case "14d":
@@ -54,7 +54,6 @@ func (h *MealHandler) GetMealAnalytics(c *gin.Context) {
 		"result":         result,
 	})
 }
-
 
 func (h *MealHandler) ResetAllFalseMeals(c *gin.Context) {
 	err := h.mrepo.ResetAllFalseMeals()
