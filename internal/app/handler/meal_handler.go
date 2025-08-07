@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -58,6 +59,7 @@ func (h *MealHandler) GetMealAnalytics(c *gin.Context) {
 func (h *MealHandler) ResetAllFalseMeals(c *gin.Context) {
 	err := h.mrepo.ResetAllFalseMeals()
 	if err != nil {
+		fmt.Printf("Error resetting false meals: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset false meals"})
 		return
 	}
