@@ -8,4 +8,5 @@ import (
 
 type MealRepository interface {
 	GetMealAnalytics(fromDate time.Time) ([]models.MealSummary, error)
+	ResetAllFalseMeals() error
 }

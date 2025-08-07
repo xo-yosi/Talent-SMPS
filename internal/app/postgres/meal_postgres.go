@@ -31,3 +31,11 @@ func (m *MealPostgres) GetMealAnalytics(fromDate time.Time) ([]models.MealSummar
 
 	return result, nil
 }
+
+func (m *MealPostgres) ResetAllFalseMeals() error {
+	return m.db.Model(&models.Student{}).Updates(map[string]interface{}{
+		"breakfast": false,
+		"lunch":     false,
+		"dinner":    false,
+	}).Error
+}

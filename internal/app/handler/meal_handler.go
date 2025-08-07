@@ -51,6 +51,17 @@ func (h *MealHandler) GetMealAnalytics(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"total_students": totalStudents,
-		"result":          result,
+		"result":         result,
 	})
+}
+
+
+func (h *MealHandler) ResetAllFalseMeals(c *gin.Context) {
+	err := h.mrepo.ResetAllFalseMeals()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset false meals"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "All false meals have been reset successfully"})
 }

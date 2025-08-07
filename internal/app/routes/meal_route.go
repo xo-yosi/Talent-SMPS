@@ -11,5 +11,6 @@ func SetupMealRoutes(r *gin.Engine, h *handler.MealHandler) {
 	{
 		protected.Use(middleware.Auth)
 		protected.GET("/meal-analytics", h.GetMealAnalytics)
+		protected.GET("/reset-false-meal", h.ResetAllFalseMeals)
 	}
 }
