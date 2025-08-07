@@ -15,7 +15,6 @@ func NewMealPostgres(db *gorm.DB) *MealPostgres {
 	return &MealPostgres{db: db}
 }
 
-
 func (m *MealPostgres) GetMealAnalytics(fromDate time.Time) ([]models.MealSummary, error) {
 	var result []models.MealSummary
 	err := m.db.Raw(`
@@ -33,9 +32,11 @@ func (m *MealPostgres) GetMealAnalytics(fromDate time.Time) ([]models.MealSummar
 }
 
 func (m *MealPostgres) ResetAllFalseMeals() error {
-	return m.db.Model(&models.Student{}).Updates(map[string]interface{}{
-		"breakfast": false,
-		"lunch":     false,
-		"dinner":    false,
-	}).Error
+	return m.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Model(&models.Student{}).
+		Updates(map[string]interface{}{
+			"breakfast": false,
+			"lunch":     false,
+			"dinner":    false,
+		}).Error
 }
